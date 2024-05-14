@@ -1,62 +1,129 @@
 ---
-wrapper_template: '_layouts/docs.html'
+wrapper_template: _layouts/docs.html
 context:
   title: Badge | Implementation
+  status: braindump
 ---
+# Badge
 
-A badge is a visual indicator only for numeric values. It is static and not interactive. There are two variants:
+# Overview
 
-- Undefined large number: When the amount of items is only relevant for small values, this variant should be used. When the value grows further than 999, the badge should show "999+".
-- Rounded large number: When the value of the badge represents a type of information where differences between large amounts of items are relevant, it should include a decimal unit prefix and round the value. Since there is a limit of 4 characters, there are two rules regarding the prefix and the decimals:
-  - Prefixes: always the largest possible decimal prefix.
-  - Decimals: the rounding should only show one decimal number when the prefixed, simplified value has just one character, i.e. more than 1k but less than 10k; more than 1M but less than 10M.
+A **badge** is a visual indicator for, and only for, numeric values. There used to be several components where we could show a numeric value in our designs:
 
-<div class="embedded-example"><a href="/docs/examples/patterns/badge/default/" class="js-example">
-View example of the default badge pattern
-</a></div>
+* Labels
 
-## Colour coding
+![alt_text](/vanilla/templates/static/images/image1.png "image_tooltip")
 
-Badges come in 2 colours. The default is black. Use any of the flavours to style badges that have semantic or otherwise colour-coded meaning:
+* Chips
 
-<div class="embedded-example"><a href="/docs/examples/patterns/badge/colors/" class="js-example">
-View example of the badge pattern
-</a></div>
+![alt_text](/vanilla/templates/static/images/image2.png "image_tooltip")
 
-## Chips with Badges
+* Unofficial badges
 
-Badges can be added to chips.
+![alt_text](/vanilla/templates/static/images/image3.png "image_tooltip")
 
-<div class="embedded-example"><a href="/docs/examples/patterns/badge/chips/" class="js-example">
-View example of the badge pattern
-</a></div>
+To remove inconsistencies, we decided to redefine some components:
 
-## Tabs with Badges
+* The "Label" component was renamed as “**Status label**” and is meant for static, non-interactive visual indicators.
+* The "**Chip**" component takes the place of the old labels, with a rework and new styles, and are always interactive.
+* A new "**Badge**" component is included for the simple, numeric labels. It will be static and not interactive. That component is the target of this documentation page.
 
-Badges can be added to tabs.
+# Anatomy
 
-<div class="embedded-example"><a href="/docs/examples/patterns/badge/tabs/" class="js-example">
-View example of the badge pattern
-</a></div>
+Variant A: Undefined large number
 
-## Side Navigation with Badges
+Variant B: Rounded large number
 
-Badges can be added to side navigation links.
+![alt_text](/vanilla/templates/static/images/image4.png "image_tooltip")
 
-<div class="embedded-example"><a href="/docs/examples/patterns/badge/side-navigation/" class="js-example">
-View example of the badge pattern
-</a></div>
+The Badge is a rectangle with full rounded borders. There will never be more than **4 characters** inside it.
 
-## Import
+There are three statuses: 
 
-To import just this component into your project, copy the snippet below and include it in your main Sass file.
+1. Default
+2. Hover
+3. Active
 
-```scss
-// import Vanilla and include base mixins
-// this only needs to happen once in a given project
-@import 'vanilla-framework';
-@include vf-base;
-@include vf-p-badge;
-```
+As we said, this component is not interactive. The **hover** and **active** status of this component exist only for situations where the badge is used inside another component. If the parent component has a hover state, the state of the badge will change accordingly.
 
-For more information see [Customising Vanilla](/docs/customising-vanilla/) in your projects, which includes overrides and importing instructions.
+# Usage
+
+### When to use
+
+When a numeric value has to be shown and highlighted, for instance:
+
+1. New items (notifications, messages, etc.)
+2. Updated items (models, machines, subscriptions, etc.)
+
+### When not to use
+
+1. Never use this component to highlight any non-numeric value. It is accepted in other Design Systems like Lightning:  \
+
+![alt_text](images/image5.png "image_tooltip")
+ \
+We will use the **Status label** for this kind of scenario.
+
+2. Don’t use this component if any kind of interaction is necessary. Badges are static and not interactive.
+3. Avoid this component if rounded values are not acceptable. In cases where the exact value is necessary even for large numbers, the badge won’t provide enough information. Consider any other acceptable kind of text form.
+
+# Variants
+
+Since there will never be more than 4 characters in our badge, we need to make a decision on how to show large numbers, i.e. **values larger than 999**. Depending on the nature of the value, it might be enough to know that there are more than 999 items. In some scenarios, though, a rounded approximation to the real value could be necessary. There are, therefore, two variants of this component:
+
+<table>
+  <tr>
+   <td>Variant
+   </td>
+   <td>Description
+   </td>
+  </tr>
+  <tr>
+   <td>Undefined large number
+   </td>
+   <td>Values over 999 are shown as <strong>999+</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>Rounded large number
+   </td>
+   <td>Values over 999 are rounded, e.g. 1.8k, 19k, 5.9M, etc.
+   </td>
+  </tr>
+</table>
+
+## Undefined large number
+
+When the amount of items is only relevant for small values, this one is the variant that should be used. When the value grows further than 999, the badge will simply show **999+**.
+
+![alt_text](/vanilla/templates/static/images/image7.png "image_tooltip")
+
+This is the default variant and it should be used in most of the cases. Relevant large numbers are probably too important to be inside a badge. 
+
+## Rounded large number
+
+When the value of the badge represents a type of information where differences between large amounts of items are relevant, this variant will provide a better experience. It will include a decimal unit prefix and round the value. Since there is a limit of 4 characters, there are two rules regarding the prefix and the decimals:
+
+1. Prefixes: always the largest possible decimal prefix.
+
+   E.g. 2,500.000 should be 2.5M, not 2500k.
+2. Decimals: the rounding should only show one decimal number when the prefixed, simplified value has just one character, i.e. more than 1k but less than 10k; more than 1M but less than 10M; etc.
+
+   * 1.790 → **1.8k** (between 1k and 10k)
+   * 18.900 → 19k
+   * 250.127 → 250k
+   * 5,950.322 → **5.9M** (between 1M and 10M)
+   * 52,433.950 → 52M
+
+![alt_text](images/image7.png "image_tooltip")
+
+![alt_text](images/image8.png "image_tooltip")
+
+![alt_text](/vanilla/templates/static/images/image9.png "image_tooltip")
+
+# Reference
+
+Badge Zeplin link → <https://zpl.io/brKqKG7>
+
+Origin of the discussion → [Disambiguate label component from buttons #3126](https://github.com/canonical-web-and-design/vanilla-framework/issues/3126)
+
+Future use of the new component → ["Chips" with numbers #3202](https://github.com/canonical-web-and-design/vanilla-framework/issues/3202)
